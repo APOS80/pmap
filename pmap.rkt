@@ -29,5 +29,5 @@
   )
 
 ;(visualize-futures ; If function isnt heavy enuf you will get an error, try comment out!
-(pmapTwo (lambda (x y) (* x  y)) '(1 2 3 4 5) '(1 2 3 4 5 6))
+(pmapTwo (lambda (x y) (* x  y)) '(1 2 3 4 5 6) '(1 2 3 4 5 6))
 ;)
