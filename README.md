@@ -1,2 +1,2 @@
 # pmap
-pmap for one and two lists using futures.
+A parallel concurrent map implementation in Racket inspired from Clojure pmap. 
