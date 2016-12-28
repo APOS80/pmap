@@ -5,24 +5,17 @@
 
 (require racket/future)
 
-(provide pmap1)
-(provide pmap2)
+(provide pmap)
 
-(define (pmap1 func alist) ; pmap for one list
+(define (transpose . lists) ; collumns to rows!
+  (apply map list lists))
+
+(define (pmap func . lists) ; pmap
   (map touch
-       (for/list ([a alist])
-         (future (lambda () (func a )))
-         ))
-  )
+       (for/list ([a (apply transpose lists)])
+         (future (lambda () (apply func a)))
+         )))
 
-;(pmap1 (lambda (x)(car x)) '((a b)(c d)(e f))) ; a test
-
-
-(define (pmap2 func alist blist) ; pmap for two lists
-  (map touch
-       (for/list ([a alist][b blist])
-         (future (lambda () (func a b)))
-         ))
-  )
-
-;(pmap2 (lambda (x y) (* x y)) '(1 2 3 4 5 6 7 8 9) '(1 2 3 4 5 6 7 8 9)) ; a test
+;(pmap (lambda (x)(car x)) '((a b)(c d)(e f))) ; a test
+;(pmap * '(1 2 3 4 5 6 7 8 9) '(1 2 3 4 5 6 7 8 9)) ; a nother test
+;(pmap (lambda (x y) (* x y)) '(1 2 3 4 5 6 7 8 9) '(1 2 3 4 5 6 7 8 9)) ; yet a nother test!
