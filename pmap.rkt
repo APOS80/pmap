@@ -7,12 +7,14 @@
 
 (provide pmap)
 
-(define (transpose . lists) ; collumns to rows!
+(define (transpose lists) ; collumns to rows!
   (apply map list lists))
+
+;(transpose '((1 3 5) (2 4 6))) ; test
 
 (define (pmap func . lists) ; pmap
   (map touch
-       (for/list ([a (apply transpose lists)])
+       (for/list ([a (transpose lists)])
          (future (lambda () (apply func a)))
          )))
 
