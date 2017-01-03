@@ -1,8 +1,7 @@
 #lang info
 (define collection "pmap")
 (define deps '("base"
-               "rackunit-lib"
-               "future"))
+               "rackunit-lib"))
 (define build-deps '("scribble-lib" "racket-doc"))
 (define scribblings '(("pmap.scrbl" ())))
 (define pkg-desc "Description Here")
