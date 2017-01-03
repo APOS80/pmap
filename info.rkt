@@ -2,7 +2,7 @@
 (define collection "pmap")
 (define deps '("base"
                "rackunit-lib"
-               "future"))
+               "racket/future"))
 (define build-deps '("scribble-lib" "racket-doc"))
 (define scribblings '(("pmap.scrbl" ())))
 (define pkg-desc "Description Here")
