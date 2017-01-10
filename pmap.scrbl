@@ -41,6 +41,7 @@ is determined of the file and cant be changed by anyone else then the creator. F
 Second:
 A procedure can NOT be passed to a place! Then how do you pass a function, as a list!
 
+pmapp shows it strength in heavyer calcullations like mandelbrot, see the comparison section!
 
 @racketblock[
     ;Example:
@@ -51,4 +52,15 @@ A procedure can NOT be passed to a place! Then how do you pass a function, as a 
    >(pmapp '(lambda (x y)(fl+ x y) ) '(1.0 2.0 3.0) '(1.0 2.0 3.0))
    >'(2.0 4.0 6.0)
  ]
+
+@section(Comparison)
+
+An comparison calcullating two mandelbrot's:
+@racketblock[
+             "(10000001 10000001) (4976.39990234375 ms)" ;map
+             "(10000001 10000001) (4196.400146484375 ms)";pmapf
+             "(10000001 10000001) (1840.7998046875 ms)"  ;pmapp
+             ]
+
+
 
