@@ -3,8 +3,8 @@
 (define worker-namespace
  (parameterize ((current-namespace (make-base-namespace)))
   (namespace-require 'racket)
-   (namespace-require 'racket/flonum)
-   (namespace-require 'racket/fixnum)
+    (namespace-require 'math)
+    (namespace-require 'racket/fixnum)
   (current-namespace)))
  
 (eval 'force worker-namespace) ; -> #<procedure:force>

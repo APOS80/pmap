@@ -5,6 +5,8 @@
                     racket/base
                     racket/future
                     racket/place
+                    racket/fixnum
+                    math
                     racket/runtime-path]]
 
 @title{pmap}
