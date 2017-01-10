@@ -53,7 +53,7 @@ pmapp shows it strength in heavyer calcullations like mandelbrot, see the compar
    >'(2.0 4.0 6.0)
  ]
 
-@section(Comparison)
+@section{Comparison}
 
 An comparison calcullating two mandelbrot's:
 @racketblock[
