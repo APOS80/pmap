@@ -1,21 +1,25 @@
 #lang scribble/manual
 
 
-@require[@for-label[pmap
+@require[scribble/example
+         @for-label[pmap
+                    racket
                     racket/base
                     racket/future
                     racket/place
                     ]]
 
-@title{pmap}
+@title{pmap : Parallel map}
 @author{APOS80}
 
 @defmodule[pmap]
 
 @section{pmapf}
 
-pmapf works as map but applies the function to every item in the list/lists in parallel using futures.
-It's restrictions is the same as for futures and map in general in Racket.
+The @racket[pmapf] works as @racket[map] but applies the function to every item in the list or lists in parallel using @racket[future]s.
+
+
+It's restrictions is the same as for @racket[future]s and  @racket[map] in general in Racket.
 
 
 @racketblock[
@@ -25,48 +29,69 @@ It's restrictions is the same as for futures and map in general in Racket.
    >'(2 4 6)
  ]
 
-If the function applied is to simple pmap might perform worse than map because of the
-overhead a future generate.
+If the function applied is to simple  @racket[pmapf] might perform worse than  @racket[map] because of the
+overhead a @racket[future] generate.
 
 
 @section{pmapp}
 
-pmapp works almost as map and applies the function to every item in the list/lists in parallel using places.
-Places has some restrictions and that impacts on the implementation in several ways, READ ON!
+The  @racket[pmapp] works almost as @racket[map] and applies the function to every item in the list or lists in parallel using @racket[places].
+@racket[places] has some restrictions and that impacts on the implementation in several ways, @bold{READ ON!}
 
-First:
-On creation of a place a rkt file is loaded into the new place, that means the uses of the place
-is determined of the file and cant be changed by anyone else then the creator. For now it includes racket base, flonum and fixnum.
+The first concern is that only some values, as determined by
+@racket[place-message-allowed?] can be sent to another @racket[place]. Unfortunately,
+a procedure cannot be sent. The current implementation of @racket[pmapp] demands that
+the function sent is explicitly quoted.
 
-Second:
-A procedure can NOT be passed to a place! Then how do you pass a function, as a list!
+Second, on creation of a @racket[place], a @tt{.rkt} file is loaded into the new place,
+and one function defined within that file gets executed.
+The current implementation of @racket[pmapp] loads a file,
+@filepath{pmapp_worker.rkt}, which receives the quoted function, the
+arguments for an iteration, and @racket[eval]s the function with these
+arguments.   
+This means that the bindings available are limited to those which are
+@racket[require]d by @filepath{pmapp_worker.rkt}. For now, this includes
+@racketmodname[racket], @racketmodname[racket/fixnum] and @racketmodname[math].
+Since @filepath{pmapp_worker.rkt} is part of this package, it is not easy to
+change these without modifying the package. It should however be possible,
+within the body of the quoted function, to use @racket[dynamic-require].
 
-pmapp shows it strength in heavyer calcullations like mandelbrot, see the comparison section!
+@racket[pmapp] shows it strength in heavier calculations like approximating the
+Mandelbrot set, see the comparison section.
 
 @racketblock[
-    ;Example:
+    ;Example_1:
              
-   >(pmapp '(lambda (x y)(+ x y) ) '(1 2 3) '(1 2 3))
+   >(pmapp '(lambda (x y)(+ x y) )
+           '(1 2 3)
+           '(1 2 3))
    >'(2 4 6)
 
-   >(pmapp '(lambda (x y)(fl+ x y) ) '(1.0 2.0 3.0) '(1.0 2.0 3.0))
+   >(pmapp '(lambda (x y)(fl+ x y) )
+           '(1.0 2.0 3.0)
+           '(1.0 2.0 3.0))
    >'(2.0 4.0 6.0)
  ]
 
-The place file has racket/base, racket/fixnum and math required.
+A more natural way to use it:
+
+@racketblock[
+    ;Example_2:
+
+   >(define f '(lambda (x y)(+ x y)))
+   >(pmapp f '(1 2 3) '(1 2 3))
+   >'(2 4 6)
+
+ ]
 
 @section{Comparison}
 
-An comparison calcullating two mandelbrot's:
-@racketblock[
- "(10000001 10000001) (4976.39990234375 ms)" ;map
- "(10000001 10000001) (4196.400146484375 ms)";pmapf
- "(10000001 10000001) (1840.7998046875 ms)"  ;pmapp
-]
+We compare here running the core of a Mandelbrot-set computation, using the
+code described in @secref["effective-futures" #:doc '(lib "scribblings/guide/guide.scrbl")]
+, four times, with @tech["flonum" #:doc '(lib "scribblings/guide/guide.scrbl")]:
 
-An comparison calcullating four mandelbrot's, with flonum:
 @racketblock[
- "(10000001 10000001 10000001 10000001) (9752.256591796875 ms)";map
- "(10000001 10000001 10000001 10000001) (8613.47607421875 ms)" ;pmapf
- "(10000001 10000001 10000001 10000001) (1887.66064453125 ms)" ;pmapp
+ "(10000001 10000001 10000001 10000001) (10046.46435546875 ms)"(code:comment "map")
+ "(10000001 10000001 10000001 10000001) (7410.047607421875 ms)"(code:comment "pmapf")
+ "(10000001 10000001 10000001 10000001) (1918.812255859375 ms)"(code:comment "pmapp")
 ]

@@ -10,10 +10,8 @@
 (define (transpose lists) ; collumns to rows!
   (apply map list lists))
 
-(define (pmapf func . lists) ; pmap
+(define (pmapf func . lists) ; pmapf
   (map touch
        (for/list ([a (transpose lists)])
          (future (lambda () (apply func a)))
          )))
-
-
