@@ -35,8 +35,9 @@ overhead a @racket[future] generate.
 
 @section{pmapp}
 
-The  @racket[pmapp] works almost as @racket[map] and applies the function to every item in the list or lists in parallel using @racket[places].
-@racket[places] has some restrictions and that impacts on the implementation in several ways, @bold{READ ON!}
+The  @racket[pmapp] works almost as @racket[map] and applies the function to every item in the list or lists
+in parallel using @racket[places]. @racket[places] has some restrictions and that impacts on the
+implementation in several ways, @bold{READ ON!}
 
 The first concern is that only some values, as determined by
 @racket[place-message-allowed?] can be sent to another @racket[place]. Unfortunately,
@@ -56,8 +57,13 @@ Since @filepath{pmapp_worker.rkt} is part of this package, it is not easy to
 change these without modifying the package. It should however be possible,
 within the body of the quoted function, to use @racket[dynamic-require].
 
+@italic{As of v1.1 pmapp starts a maximum of one place per cpu-core or less if the number of jobs is smaller
+than the number of cpu-cores.} 
+
 @racket[pmapp] shows it strength in heavier calculations like approximating the
 Mandelbrot set, see the comparison section.
+
+
 
 @racketblock[
     ;Example_1:
@@ -108,4 +114,4 @@ As seen above, the number of itterations has significant impact on the performan
 The cost of starting a place becomes apparent but in return the cost of the actual
 computations is less.
 
-The computations where done with an old "Intel Core2 Quad Q6600 2.4Ghz" CPU. 
+The computations where done with an old "Quad Core 2.4Ghz" CPU. 
