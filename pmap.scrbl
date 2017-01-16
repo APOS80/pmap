@@ -14,7 +14,7 @@
 
 @defmodule[pmap]
 
-@section{pmapf}
+@section{pmap}
 
 @defproc[(pmapf [Proc (procedure?)][lists (list?)] ...+) list?]
 
@@ -33,9 +33,6 @@ It's restrictions is the same as for @racket[future]s and  @racket[map] in gener
 
 If the function applied is to simple  @racket[pmapf] might perform worse than  @racket[map] because of the
 overhead a @racket[future] generate.
-
-
-@section{pmapp}
 
 @defproc[(pmapp [Proc (quoted-lambda?)][lists (list?)] ...+) list?]
 
@@ -91,8 +88,6 @@ A more natural way to use it:
    >'(2 4 6)
 
  ]
-
-@section{pmapp-m}
 
 @defproc[(pmapp-m [Int (exact-nonnegativ-integer?)][Proc (quoted-lambda?)][lists (list?)] ...+) list?]
 
