@@ -16,6 +16,8 @@
 
 @section{pmapf}
 
+@defproc[(pmapf [Proc (procedure?)][lists (list?)] ...+) list?]
+
 The @racket[pmapf] works as @racket[map] but applies the function to every item in the list or lists in parallel using @racket[future]s.
 
 
@@ -34,6 +36,8 @@ overhead a @racket[future] generate.
 
 
 @section{pmapp}
+
+@defproc[(pmapp [Proc (quoted-lambda?)][lists (list?)] ...+) list?]
 
 The  @racket[pmapp] works almost as @racket[map] and applies the function to every item in the list or lists
 in parallel using @racket[places]. @racket[places] has some restrictions and that impacts on the
@@ -63,8 +67,6 @@ than the number of cpu-cores.}
 @racket[pmapp] shows it strength in heavier calculations like approximating the
 Mandelbrot set, see the comparison section.
 
-
-
 @racketblock[
     ;Example_1:
              
@@ -89,6 +91,13 @@ A more natural way to use it:
    >'(2 4 6)
 
  ]
+
+@section{pmapp-m}
+
+@defproc[(pmapp-m [Int (exact-nonnegativ-integer?)][Proc (quoted-lambda?)][lists (list?)] ...+) list?]
+
+Works as @racket[pmapp] but with an aditional parameter setting the max number of places to use.
+
 
 @section{Comparison}
 
