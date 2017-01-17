@@ -101,21 +101,21 @@ code described in @secref["effective-futures" #:doc '(lib "scribblings/guide/gui
 , four times, with @tech["flonum" #:doc '(lib "scribblings/guide/guide.scrbl")]:
 
 @racketblock[
-(code:comment "(mandelbrot 10000000 62 500 1000)")
-"(10000001 10000001 10000001 10000001) (12419.7421875 ms)"(code:comment "map")
-"(10000001 10000001 10000001 10000001) (10050.90576171875 ms)"(code:comment "pmapf")
-"(10000001 10000001 10000001 10000001) (1766.72998046875 ms)"(code:comment "pmapp")
+(code:comment "(mandelbrot 10000000 62 500 1000) four calculations")
+"(12340.885 ms)"(code:comment "map")
+"(8113.297 ms)"(code:comment "pmapf")
+"(1727.656 ms)"(code:comment "pmapp")
+"(1526.297 ms)"(code:comment "pmapp-m two places")
 ]
 
 @racketblock[
-(code:comment "(mandelbrot 100000 62 500 1000)")
-"(100001 100001 100001 100001) (121.919921875 ms)"(code:comment "map")
-"(100001 100001 100001 100001) (88.724853515625 ms)"(code:comment "pmapf")
-"(100001 100001 100001 100001) (1677.67822265625 ms)"(code:comment "pmapp")
+(code:comment "(mandelbrot 100000 62 500 1000) four calculations")
+"(149.705 ms)"(code:comment "map")
+"(96.563 ms)"(code:comment "pmapf")
+"(1588.309 ms)"(code:comment "pmapp")
+"(1290.812 ms)"(code:comment "pmapp-m two places")
 ]
 
 As seen above, the number of itterations has significant impact on the performance.
-The cost of starting a place becomes apparent but in return the cost of the actual
-computations is less.
 
 The computations where done with an old "Quad Core 2.4Ghz" CPU. 
