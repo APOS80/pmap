@@ -18,15 +18,14 @@
 
 @defproc[(pmapf [Proc (procedure?)][lists (list?)] ...+) list?]
 
-The @racket[pmapf] works as @racket[map] but applies the function to every item in the list or lists in parallel using @racket[future]s.
+The @racket[pmapf]utures works as @racket[map] but applies the function to every item in the list or lists in parallel using @racket[future]s.
 
 
 It's restrictions is the same as for @racket[future]s and  @racket[map] in general in Racket.
 
 
 @racketblock[
-    ;Example:
-             
+    (code:comment ";Example:")
    >(pmapf + '(1 2 3) '(1 2 3))
    >'(2 4 6)
  ]
@@ -36,7 +35,7 @@ overhead a @racket[future] generate.
 
 @defproc[(pmapp [Proc (quoted-lambda?)][lists (list?)] ...+) list?]
 
-The  @racket[pmapp] works almost as @racket[map] and applies the function to every item in the list or lists
+The  @racket[pmapp]laces works almost as @racket[map] and applies the function to every item in the list or lists
 in parallel using @racket[places]. @racket[places] has some restrictions and that impacts on the
 implementation in several ways, @bold{READ ON!}
 
@@ -65,7 +64,7 @@ than the number of cpu-cores.}
 Mandelbrot set, see the comparison section.
 
 @racketblock[
-    ;Example_1:
+    (code:comment ";Example_1:")
              
    >(pmapp '(lambda (x y)(+ x y) )
            '(1 2 3)
@@ -81,8 +80,7 @@ Mandelbrot set, see the comparison section.
 A more natural way to use it:
 
 @racketblock[
-    ;Example_2:
-
+    (code:comment ";Example_2:")
    >(define f '(lambda (x y)(+ x y)))
    >(pmapp f '(1 2 3) '(1 2 3))
    >'(2 4 6)
@@ -91,7 +89,31 @@ A more natural way to use it:
 
 @defproc[(pmapp-m [Int (exact-nonnegativ-integer?)][Proc (quoted-lambda?)][lists (list?)] ...+) list?]
 
-Works as @racket[pmapp] but with an aditional parameter setting the max number of places to use.
+@racket[pmapp-m]ax works as @racket[pmapp] but with an aditional parameter setting the max number of places to use.
+
+@section{pmapp-c}
+@racket[pmapp-c]ontinuous is @racket[pmapp] in parts. It works like @racket[pmapp] but its set up for continuous work.
+
+@defproc[(pmapp-c-start [Int (exact-nonnegativ-integer?)]) list?]
+@racket[pmapp-c-start] starts a maximum of places given by the parameter.
+This is preferebly done in the begining of the program as the @racket[place]s has a startup time.
+
+@defproc[(pmapp-c [Proc (quoted-lambda?)][lists (list?)] ...+) list?]
+Works as @racket[pmapp]
+
+@defproc[(pmapp-c-stop [list (list?)])list?]
+Stops the @racket[place]s started by @racket[pmapp-c-start].
+
+@racketblock[
+    (code:comment ";Example:")
+   >(define pls (pmapp-c-start 2))(code:comment ";Start two places")
+   >(define f (lambda (x y)(+ x y)))
+   >(pmapp-c f '(1 2 3) '(1 2 3))
+   >'(2 4 6)
+   >(pmapp-c-stop pls)(code:comment ";Stops two places")
+   >
+
+ ]
 
 
 @section{Comparison}
@@ -101,19 +123,21 @@ code described in @secref["effective-futures" #:doc '(lib "scribblings/guide/gui
 , four times, with @tech["flonum" #:doc '(lib "scribblings/guide/guide.scrbl")]:
 
 @racketblock[
-(code:comment "(mandelbrot 10000000 62 500 1000) four calculations")
+(code:comment "(mandelbrot 10000000 62 500 1000), four calculations")
 "(12340.885 ms)"(code:comment "map")
 "(8113.297 ms)"(code:comment "pmapf")
 "(1727.656 ms)"(code:comment "pmapp")
 "(1526.297 ms)"(code:comment "pmapp-m two places")
+"(598.170 ms)"(code:comment "pmapp-c four places")
 ]
 
 @racketblock[
-(code:comment "(mandelbrot 100000 62 500 1000) four calculations")
+(code:comment "(mandelbrot 100000 62 500 1000), four calculations")
 "(149.705 ms)"(code:comment "map")
 "(96.563 ms)"(code:comment "pmapf")
 "(1588.309 ms)"(code:comment "pmapp")
 "(1290.812 ms)"(code:comment "pmapp-m two places")
+"(14.502 ms)"(code:comment "pmapp-c four places")
 ]
 
 As seen above, the number of itterations has significant impact on the performance.

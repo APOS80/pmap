@@ -10,6 +10,9 @@
 
 (provide pmapp)
 (provide pmapp-m)
+(provide pmapp-c-start)
+(provide pmapp-c)
+(provide pmapp-c-stop)
 
 (define (transpose lists) ; columns to rows!
   (apply map list lists))
@@ -49,3 +52,24 @@
          [stop (map place-kill pls)]) ;Kill places. 
      cresults
      ))
+
+;pmapp-c, for repetetive calculations.
+(define (pmapp-c-start n)
+  (let ([nopls (if (< (processor-count) (if (< n 1) 1 n)) ;Determin amount of places to start.
+                       (processor-count) n)])
+         (for/list ([i (in-range nopls)])
+                (dynamic-place worker 'pmapp-worker))));Start the places.
+
+(define (pmapp-c pls func . args)
+  (let* ([joblist (transpose args)] ;Transpose list or lists.
+         [results ;Send work to places and collect, over and over until done.
+           (for/list ([sl (in-slice (length pls) joblist)]) ;Take slice of jobs to process.
+            (for ([wo sl][pl pls]) ;Send jobs to places.
+              (place-channel-put pl (append (list func) wo)))
+            (for/list ([ra sl][v pls]) (place-channel-get v)) ;Get results from places.
+            )])
+         (apply append '() results))) ;Clean results.)
+
+(define (pmapp-c-stop pls) (map place-kill pls))
+
+

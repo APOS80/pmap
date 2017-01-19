@@ -7,5 +7,5 @@
                      "math-doc"))
 (define scribblings '(("pmap.scrbl" ())))
 (define pkg-desc "Parallel map")
-(define version "1.2")
+(define version "1.4")
 (define pkg-authors '(APOS80))
