@@ -16,7 +16,9 @@
 
 @section{pmap}
 
-@defproc[(pmapf [Proc (procedure?)][lists (list?)] ...+) list?]
+@defproc[(pmapf [Proc (procedure?)]
+                [list (list?)]
+                ...+) list?]
 
 The @racket[pmapf]utures works as @racket[map] but applies the function to every item in the list or lists in parallel using @racket[future]s.
 
@@ -33,7 +35,9 @@ It's restrictions is the same as for @racket[future]s and  @racket[map] in gener
 If the function applied is to simple  @racket[pmapf] might perform worse than  @racket[map] because of the
 overhead a @racket[future] generate.
 
-@defproc[(pmapp [Proc (quoted-lambda?)][lists (list?)] ...+) list?]
+@defproc[(pmapp [Proc (quoted-lambda?)]
+                [list (list?)]
+                ...+) list?]
 
 The  @racket[pmapp]laces works almost as @racket[map] and applies the function to every item in the list or lists
 in parallel using @racket[places]. @racket[places] has some restrictions and that impacts on the
@@ -87,28 +91,39 @@ A more natural way to use it:
 
  ]
 
-@defproc[(pmapp-m [Int (exact-nonnegativ-integer?)][Proc (quoted-lambda?)][lists (list?)] ...+) list?]
+@defproc[(pmapp-m [Places (exact-nonnegativ-integer?)]
+                  [Proc (quoted-lambda?)]
+                  [list (list?)]
+                  ...+) list?]
 
 @racket[pmapp-m]ax works as @racket[pmapp] but with an aditional parameter setting the max number of places to use.
 
 @section{pmapp-c}
 @racket[pmapp-c]ontinuous is @racket[pmapp] in parts. It works like @racket[pmapp] but its set up for continuous work.
 
-@defproc[(pmapp-c-start [Int (exact-nonnegativ-integer?)]) list?]
+@defproc[(pmapp-c-start [Places (exact-nonnegativ-integer?)]
+                        ) list?]
+
 @racket[pmapp-c-start] starts a maximum of places given by the parameter.
-This is preferebly done in the begining of the program as the @racket[place]s has a startup time.
+This is preferebly done in the beginning of the program as the @racket[place]s has a startup time.
 
-@defproc[(pmapp-c [Proc (quoted-lambda?)][lists (list?)] ...+) list?]
-Works as @racket[pmapp]
+@defproc[(pmapp-c [Places (list?)]
+                  [Proc (quoted-lambda?)]
+                  [list (list?)]
+                  ...+) list?]
 
-@defproc[(pmapp-c-stop [list (list?)])list?]
+Works as @racket[pmapp] but with an additional parameter.
+
+@defproc[(pmapp-c-stop [Places (list?)]
+                       )list?]
+
 Stops the @racket[place]s started by @racket[pmapp-c-start].
 
 @racketblock[
     (code:comment ";Example:")
-   >(define pls (pmapp-c-start 2))(code:comment ";Start two places")
-   >(define f (lambda (x y)(+ x y)))
-   >(pmapp-c f '(1 2 3) '(1 2 3))
+   >(define pls (pmapp-c-start 2)) (code:comment ";Start two places")
+   >(define f '(lambda (x y)(+ x y)))
+   >(pmapp-c pls f '(1 2 3) '(1 2 3)) (code:coment ";Send and recive")
    >'(2 4 6)
    >(pmapp-c-stop pls)(code:comment ";Stops two places")
    >
