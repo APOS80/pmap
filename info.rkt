@@ -5,7 +5,7 @@
 (define build-deps '("scribble-lib"
                      "racket-doc"
                      "math-doc"))
-(define scribblings '(("pmap.scrbl" ())))
+(define scribblings '(["pmap.scrbl" () ("Parallelism")]))
 (define pkg-desc "Parallel map")
 (define version "1.4")
 (define pkg-authors '(APOS80))
